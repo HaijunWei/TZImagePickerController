@@ -25,6 +25,7 @@
 #import "TZLocationManager.h"
 #import "TZPhotoPreviewController.h"
 #import "TZPhotoPreviewCell.h"
+#import "UIImage+MyBundle.h"
 
 @class TZAlbumCell, TZAssetCell;
 @protocol TZImagePickerControllerDelegate;
@@ -296,11 +297,6 @@
 @property (nonatomic, assign) NSInteger columnNumber;
 @property (assign, nonatomic) BOOL isFirstAppear;
 - (void)configTableView;
-@end
-
-
-@interface UIImage (MyBundle)
-+ (UIImage *)imageNamedFromMyBundle:(NSString *)name;
 @end
 
 

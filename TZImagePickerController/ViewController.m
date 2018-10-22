@@ -376,6 +376,10 @@
 
     }];
     
+    imagePickerVc.maxImagesCount = 1;
+    imagePickerVc.showSelectBtn = NO;
+    imagePickerVc.allowCrop = YES;
+    
     [self presentViewController:imagePickerVc animated:YES completion:nil];
 }
 
