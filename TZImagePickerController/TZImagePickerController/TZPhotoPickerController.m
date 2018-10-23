@@ -679,7 +679,6 @@ static CGFloat itemMargin = 5;
     customCamera.maxRecordDuration = tzImagePickerVc.videoMaximumDuration;
     customCamera.sessionPreset = ZLCaptureSessionPreset1280x720;
     customCamera.videoType = ZLExportVideoTypeMov;
-    customCamera.circleProgressColor = [UIColor redColor];
     __weak typeof(customCamera) weakCamera = customCamera;
     customCamera.doneBlock = ^(UIImage *image, NSURL *videoUrl) {
         [weakCamera dismissViewControllerAnimated:NO completion:nil];

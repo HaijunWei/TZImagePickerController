@@ -202,7 +202,7 @@
     self.editBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     self.editBtn.frame = self.bottomView.frame;
     self.editBtn.backgroundColor = [UIColor whiteColor];
-    [self.editBtn setImage:[UIImage imageNamedFromMyBundle:@"zl_takeok"] forState:UIControlStateNormal];
+    [self.editBtn setImage:[UIImage imageNamedFromMyBundle:@"zl_edit"] forState:UIControlStateNormal];
     [self.editBtn addTarget:self action:@selector(editClick) forControlEvents:UIControlEventTouchUpInside];
     self.editBtn.layer.masksToBounds = YES;
     self.editBtn.hidden = YES;
@@ -307,7 +307,7 @@
 - (void)showCancelDoneBtn
 {
     self.cancelBtn.hidden = NO;
-    self.editBtn.hidden = NO;
+    if (self.allowTakePhoto) { self.editBtn.hidden = NO; }
     self.doneBtn.hidden = NO;
     
     CGRect cancelRect = self.cancelBtn.frame;
@@ -408,6 +408,8 @@
 
 @property (nonatomic, assign) AVCaptureVideoOrientation orientation;
 
+@property (nonatomic, strong) UIColor *defaultCircleProgressColor;
+
 @end
 
 @implementation ZLCustomCamera
@@ -426,6 +428,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.defaultCircleProgressColor = [UIColor colorWithRed:31 / 255.0 green:185 / 255.0 blue:34 / 255.0 alpha:1.0];
     [self setupUI];
     [self setupCamera];
     [self observeDeviceMotion];
