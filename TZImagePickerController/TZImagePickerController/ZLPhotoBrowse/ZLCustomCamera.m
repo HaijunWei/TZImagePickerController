@@ -71,7 +71,9 @@
 
 @property (nonatomic, assign) BOOL allowTakePhoto;
 @property (nonatomic, assign) BOOL allowRecordVideo;
+@property (nonatomic, assign) BOOL allowEdit;
 @property (nonatomic, strong) UIColor *circleProgressColor;
+@property (nonatomic, strong) UIColor *defaultCircleProgressColor;
 @property (nonatomic, assign) NSInteger maxRecordDuration;
 
 @property (nonatomic, strong) UIButton *dismissBtn;
@@ -95,7 +97,7 @@
         CGFloat width = CGRectGetHeight(self.bottomView.frame)*kBottomViewScale;
         UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(0, 0, width, width) cornerRadius:width/2];
         
-        _animateLayer.strokeColor = self.circleProgressColor.CGColor;
+        _animateLayer.strokeColor = self.circleProgressColor ? self.circleProgressColor.CGColor : self.defaultCircleProgressColor.CGColor;
         _animateLayer.fillColor = [UIColor clearColor].CGColor;
         _animateLayer.path = path.CGPath;
         _animateLayer.lineWidth = 8;
@@ -173,6 +175,8 @@
 
 - (void)setupUI
 {
+    self.defaultCircleProgressColor = [UIColor colorWithRed:31 / 255.0 green:185 / 255.0 blue:34 / 255.0 alpha:1.0];
+    
     self.bottomView = [[UIView alloc] init];
     self.bottomView.layer.masksToBounds = YES;
     self.bottomView.backgroundColor = [kRGB(244, 244, 244) colorWithAlphaComponent:.9];
@@ -307,7 +311,7 @@
 - (void)showCancelDoneBtn
 {
     self.cancelBtn.hidden = NO;
-    if (self.allowTakePhoto) { self.editBtn.hidden = NO; }
+    if (self.allowEdit && self.allowTakePhoto) { self.editBtn.hidden = NO; }
     self.doneBtn.hidden = NO;
     
     CGRect cancelRect = self.cancelBtn.frame;
@@ -408,8 +412,6 @@
 
 @property (nonatomic, assign) AVCaptureVideoOrientation orientation;
 
-@property (nonatomic, strong) UIColor *defaultCircleProgressColor;
-
 @end
 
 @implementation ZLCustomCamera
@@ -428,7 +430,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.defaultCircleProgressColor = [UIColor colorWithRed:31 / 255.0 green:185 / 255.0 blue:34 / 255.0 alpha:1.0];
     [self setupUI];
     [self setupCamera];
     [self observeDeviceMotion];
@@ -554,6 +555,7 @@
     
     self.toolView = [[CameraToolView alloc] init];
     self.toolView.delegate = self;
+    self.toolView.allowEdit = self.allowEdit;
     self.toolView.allowTakePhoto = self.allowTakePhoto;
     self.toolView.allowRecordVideo = self.allowRecordVideo;
     self.toolView.circleProgressColor = self.circleProgressColor;
@@ -700,7 +702,7 @@
     }
     //曝光模式
     if ([captureDevice isExposureModeSupported:exposureMode]) {
-        [captureDevice setExposureMode:AVCaptureExposureModeAutoExpose];
+        [captureDevice setExposureMode:AVCaptureExposureModeContinuousAutoExposure];
     }
     //曝光点
     if ([captureDevice isExposurePointOfInterestSupported]) {
@@ -896,7 +898,14 @@
 
 - (void)onEditClick
 {
-    TOCropViewController *cropViewController = [[TOCropViewController alloc] initWithImage:self.takedImage];
+    TOCropViewCroppingStyle style = self.needCircleCrop ? TOCropViewCroppingStyleCircular: TOCropViewCroppingStyleDefault;
+    TOCropViewController *cropViewController = [[TOCropViewController alloc] initWithCroppingStyle:style image:self.takedImage];
+    if (style == TOCropViewCroppingStyleDefault && !CGSizeEqualToSize(CGSizeZero, self.cropAspectRatio)) {
+        // 如果有自定义剪裁比，禁止随意调整比例
+        cropViewController.aspectRatioLockEnabled = YES;
+        cropViewController.resetAspectRatioEnabled = NO;
+        cropViewController.customAspectRatio = self.cropAspectRatio;
+    }
     [self addChildViewController:cropViewController];
     cropViewController.view.frame = self.view.bounds;
     cropViewController.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -958,9 +967,11 @@
     });
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+#pragma mark - Setter
+
+- (void)setCircleProgressColor:(UIColor *)circleProgressColor {
+    _circleProgressColor = circleProgressColor;
+    self.toolView.circleProgressColor = circleProgressColor;
 }
 
 @end

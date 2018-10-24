@@ -604,10 +604,17 @@ static CGFloat itemMargin = 5;
         }
     } else {
         if (tzImagePickerVc.showSelectBtn == NO && tzImagePickerVc.allowCrop == YES) {
-            // 单选模式下，进入编辑模式
+            // 单选模式并且允许调整图片大小，进入编辑模式
             [[TZImageManager manager] getPhotoWithAsset:model.asset completion:^(UIImage *photo, NSDictionary *info, BOOL isDegraded) {
                 if (!isDegraded) {
-                    TOCropViewController *cropViewController = [[TOCropViewController alloc] initWithImage:photo];
+                    TOCropViewCroppingStyle style = tzImagePickerVc.needCircleCrop ? TOCropViewCroppingStyleCircular: TOCropViewCroppingStyleDefault;
+                    TOCropViewController *cropViewController = [[TOCropViewController alloc] initWithCroppingStyle:style image:photo];
+                    if (style == TOCropViewCroppingStyleDefault && !CGSizeEqualToSize(CGSizeZero, tzImagePickerVc.cropAspectRatio)) {
+                        // 如果有自定义剪裁比，禁止随意调整比例
+                        cropViewController.aspectRatioLockEnabled = YES;
+                        cropViewController.resetAspectRatioEnabled = NO;
+                        cropViewController.customAspectRatio = tzImagePickerVc.cropAspectRatio;
+                    }
                     cropViewController.onDidCropToRect = ^(UIImage * _Nonnull image, CGRect cropRect, NSInteger angle) {
                         [self.navigationController dismissViewControllerAnimated:YES completion:nil];
                         [self callDelegateMethodWithPhotos:@[image] assets:@[model.asset] infoArr:nil];
@@ -679,6 +686,9 @@ static CGFloat itemMargin = 5;
     customCamera.maxRecordDuration = tzImagePickerVc.videoMaximumDuration;
     customCamera.sessionPreset = ZLCaptureSessionPreset1280x720;
     customCamera.videoType = ZLExportVideoTypeMov;
+    customCamera.allowEdit = tzImagePickerVc.allowCrop;
+    customCamera.needCircleCrop = tzImagePickerVc.needCircleCrop;
+    customCamera.cropAspectRatio = tzImagePickerVc.cropAspectRatio;
     __weak typeof(customCamera) weakCamera = customCamera;
     customCamera.doneBlock = ^(UIImage *image, NSURL *videoUrl) {
         [weakCamera dismissViewControllerAnimated:NO completion:nil];

@@ -20,6 +20,7 @@
 #import "TZAssetCell.h"
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "FLAnimatedImage.h"
+#import "ZLCustomCamera.h"
 
 @interface ViewController ()<TZImagePickerControllerDelegate,UICollectionViewDataSource,UICollectionViewDelegate,UIImagePickerControllerDelegate,UIAlertViewDelegate,UINavigationControllerDelegate> {
     NSMutableArray *_selectedPhotos;
@@ -58,7 +59,19 @@
     [super viewDidLoad];
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        ZLCustomCamera *camera = [ZLCustomCamera new];
+//        camera.allowEdit = YES;
+//        camera.allowTakePhoto = YES;
+//        camera.cropAspectRatio = CGSizeMake(1, 2);
+//        camera.needCircleCrop = YES;
+//        [self presentViewController:camera animated:YES completion:nil];
+        
         TZImagePickerController *imagePickerVc = [[TZImagePickerController alloc] init];
+//        imagePickerVc.maxImagesCount = 1;
+//        imagePickerVc.showSelectBtn = NO;
+        imagePickerVc.allowCrop = YES;
+        imagePickerVc.needCircleCrop = YES;
+        imagePickerVc.videoMaximumDuration = 10;
         [self presentViewController:imagePickerVc animated:YES completion:nil];
         return;
     });

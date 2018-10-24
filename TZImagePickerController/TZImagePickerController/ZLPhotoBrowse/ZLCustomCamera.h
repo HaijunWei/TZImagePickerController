@@ -17,6 +17,12 @@
 @property (nonatomic, assign) BOOL allowTakePhoto;
 //是否允许录制视频
 @property (nonatomic, assign) BOOL allowRecordVideo;
+/// 是否允许编辑
+@property (nonatomic, assign) BOOL allowEdit;
+/// 修剪宽高比
+@property (nonatomic, assign) CGSize cropAspectRatio;
+/// 是否需要圆形剪裁区
+@property (nonatomic, assign) BOOL needCircleCrop;
 
 //最大录制时长
 @property (nonatomic, assign) NSInteger maxRecordDuration;
