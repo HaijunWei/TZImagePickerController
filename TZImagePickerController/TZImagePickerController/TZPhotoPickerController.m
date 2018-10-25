@@ -684,7 +684,6 @@ static CGFloat itemMargin = 5;
     customCamera.allowTakePhoto = tzImagePickerVc.allowTakePicture;
     customCamera.allowRecordVideo = tzImagePickerVc.allowTakeVideo;
     customCamera.maxRecordDuration = tzImagePickerVc.videoMaximumDuration;
-    customCamera.sessionPreset = ZLCaptureSessionPreset1280x720;
     customCamera.videoType = ZLExportVideoTypeMov;
     customCamera.allowEdit = tzImagePickerVc.allowCrop;
     customCamera.needCircleCrop = tzImagePickerVc.needCircleCrop;
