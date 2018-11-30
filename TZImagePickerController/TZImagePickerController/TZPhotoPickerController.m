@@ -16,6 +16,8 @@
 #import "TZVideoPlayerController.h"
 #import "TZGifPhotoPreviewController.h"
 #import "TZLocationManager.h"
+#import "TOCropViewController.h"
+#import "ZLCustomCamera.h"
 #import <MobileCoreServices/MobileCoreServices.h>
 
 @interface TZPhotoPickerController ()<UICollectionViewDataSource,UICollectionViewDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,UIAlertViewDelegate> {
@@ -609,6 +611,28 @@ static CGFloat itemMargin = 5;
             [self.navigationController pushViewController:gifPreviewVc animated:YES];
         }
     } else {
+        if (tzImagePickerVc.showSelectBtn == NO && tzImagePickerVc.allowCrop == YES) {
+            // 单选模式并且允许调整图片大小，进入编辑模式
+            [[TZImageManager manager] getPhotoWithAsset:model.asset completion:^(UIImage *photo, NSDictionary *info, BOOL isDegraded) {
+                if (!isDegraded) {
+                    TOCropViewCroppingStyle style = tzImagePickerVc.needCircleCrop ? TOCropViewCroppingStyleCircular: TOCropViewCroppingStyleDefault;
+                    TOCropViewController *cropViewController = [[TOCropViewController alloc] initWithCroppingStyle:style image:photo];
+                    if (style == TOCropViewCroppingStyleDefault && !CGSizeEqualToSize(CGSizeZero, tzImagePickerVc.cropAspectRatio)) {
+                        // 如果有自定义剪裁比，禁止随意调整比例
+                        cropViewController.aspectRatioLockEnabled = YES;
+                        cropViewController.resetAspectRatioEnabled = NO;
+                        cropViewController.customAspectRatio = tzImagePickerVc.cropAspectRatio;
+                    }
+                    cropViewController.onDidCropToRect = ^(UIImage * _Nonnull image, CGRect cropRect, NSInteger angle) {
+                        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+                        [self callDelegateMethodWithPhotos:@[image] assets:@[model.asset] infoArr:nil];
+                    };
+                    [self.navigationController pushViewController:cropViewController animated:YES];
+                }
+            }];
+            return;
+        }
+        
         TZPhotoPreviewController *photoPreviewVc = [[TZPhotoPreviewController alloc] init];
         photoPreviewVc.currentIndex = index;
         photoPreviewVc.models = _models;
@@ -653,38 +677,37 @@ static CGFloat itemMargin = 5;
 
 // 调用相机
 - (void)pushImagePickerController {
-    // 提前定位
-    TZImagePickerController *tzImagePickerVc = (TZImagePickerController *)self.navigationController;
-    if (tzImagePickerVc.allowCameraLocation) {
-        __weak typeof(self) weakSelf = self;
-        [[TZLocationManager manager] startLocationWithSuccessBlock:^(NSArray<CLLocation *> *locations) {
-            __strong typeof(weakSelf) strongSelf = weakSelf;
-            strongSelf.location = [locations firstObject];
-        } failureBlock:^(NSError *error) {
-            __strong typeof(weakSelf) strongSelf = weakSelf;
-            strongSelf.location = nil;
-        }];
-    }
     
-    UIImagePickerControllerSourceType sourceType = UIImagePickerControllerSourceTypeCamera;
-    if ([UIImagePickerController isSourceTypeAvailable: sourceType]) {
-        self.imagePickerVc.sourceType = sourceType;
-        NSMutableArray *mediaTypes = [NSMutableArray array];
-        if (tzImagePickerVc.allowTakePicture) {
-            [mediaTypes addObject:(NSString *)kUTTypeImage];
+    TZImagePickerController *tzImagePickerVc = (TZImagePickerController *)self.navigationController;
+    
+    ZLCustomCamera *customCamera = [ZLCustomCamera new];
+    customCamera.allowTakePhoto = tzImagePickerVc.allowTakePicture;
+    customCamera.allowRecordVideo = tzImagePickerVc.allowTakeVideo;
+    customCamera.maxRecordDuration = tzImagePickerVc.videoMaximumDuration;
+    customCamera.videoType = ZLExportVideoTypeMov;
+    customCamera.allowEdit = tzImagePickerVc.allowCrop;
+    customCamera.needCircleCrop = tzImagePickerVc.needCircleCrop;
+    customCamera.cropAspectRatio = tzImagePickerVc.cropAspectRatio;
+    __weak typeof(customCamera) weakCamera = customCamera;
+    customCamera.doneBlock = ^(UIImage *image, NSURL *videoUrl) {
+        [weakCamera dismissViewControllerAnimated:NO completion:nil];
+        if (image) {
+            [tzImagePickerVc showProgressHUD];
+            [[TZImageManager manager] savePhotoWithImage:image completion:^(PHAsset *asset, NSError *error) {
+                if (!error) {
+                    [self addPHAsset:asset];
+                }
+            }];
+        } else if (videoUrl) {
+            [tzImagePickerVc showProgressHUD];
+            [[TZImageManager manager] saveVideoWithUrl:videoUrl completion:^(PHAsset *asset, NSError *error) {
+                if (!error) {
+                    [self addPHAsset:asset];
+                }
+            }];
         }
-        if (tzImagePickerVc.allowTakeVideo) {
-            [mediaTypes addObject:(NSString *)kUTTypeMovie];
-            self.imagePickerVc.videoMaximumDuration = tzImagePickerVc.videoMaximumDuration;
-        }
-        self.imagePickerVc.mediaTypes= mediaTypes;
-        if (tzImagePickerVc.uiImagePickerControllerSettingBlock) {
-            tzImagePickerVc.uiImagePickerControllerSettingBlock(_imagePickerVc);
-        }
-        [self presentViewController:_imagePickerVc animated:YES completion:nil];
-    } else {
-        NSLog(@"模拟器中无法打开照相机,请在真机中使用");
-    }
+    };
+    [self presentViewController:customCamera animated:YES completion:nil];
 }
 
 - (void)refreshBottomToolBarStatus {
@@ -827,19 +850,8 @@ static CGFloat itemMargin = 5;
     }
     
     if (tzImagePickerVc.maxImagesCount <= 1) {
-        if (tzImagePickerVc.allowCrop && asset.mediaType == PHAssetMediaTypeImage) {
-            TZPhotoPreviewController *photoPreviewVc = [[TZPhotoPreviewController alloc] init];
-            if (tzImagePickerVc.sortAscendingByModificationDate) {
-                photoPreviewVc.currentIndex = _models.count - 1;
-            } else {
-                photoPreviewVc.currentIndex = 0;
-            }
-            photoPreviewVc.models = _models;
-            [self pushPhotoPrevireViewController:photoPreviewVc];
-        } else {
-            [tzImagePickerVc addSelectedModel:assetModel];
-            [self doneButtonClick];
-        }
+        [tzImagePickerVc addSelectedModel:assetModel];
+        [self doneButtonClick];
         return;
     }
     

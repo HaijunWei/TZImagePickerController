@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = "8.0"
   s.source       = { :git => "https://github.com/banchichen/TZImagePickerController.git", :tag => "3.1.5" }
   s.requires_arc = true
-  s.resources    = "TZImagePickerController/TZImagePickerController/*.{png,bundle}"
-  s.source_files = "TZImagePickerController/TZImagePickerController/*.{h,m}"
+  s.resources    = "TZImagePickerController/TZImagePickerController/*.{png,bundle}", "TZImagePickerController/TZImagePickerController/TOCropViewController/**/*.bundle"
+  s.source_files = "TZImagePickerController/TZImagePickerController/**/*.{h,m}"
   s.frameworks   = "Photos"
 end
