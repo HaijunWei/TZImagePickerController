@@ -191,13 +191,13 @@
     self.dismissBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     self.dismissBtn.frame = CGRectMake(60, self.bounds.size.height/2-25/2, 25, 25);
     
-    [self.dismissBtn setImage:[UIImage imageNamedFromMyBundle:@"zl_arrow_down"] forState:UIControlStateNormal];
+    [self.dismissBtn setImage:[UIImage tz_imageNamedFromMyBundle:@"zl_arrow_down"] forState:UIControlStateNormal];
     [self.dismissBtn addTarget:self action:@selector(dismissVC) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.dismissBtn];
     
     self.cancelBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     self.cancelBtn.backgroundColor = [kRGB(244, 244, 244) colorWithAlphaComponent:.9];
-    [self.cancelBtn setImage:[UIImage imageNamedFromMyBundle:@"zl_retake"] forState:UIControlStateNormal];
+    [self.cancelBtn setImage:[UIImage tz_imageNamedFromMyBundle:@"zl_retake"] forState:UIControlStateNormal];
     [self.cancelBtn addTarget:self action:@selector(retake) forControlEvents:UIControlEventTouchUpInside];
     self.cancelBtn.layer.masksToBounds = YES;
     self.cancelBtn.hidden = YES;
@@ -206,7 +206,7 @@
     self.editBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     self.editBtn.frame = self.bottomView.frame;
     self.editBtn.backgroundColor = [UIColor whiteColor];
-    [self.editBtn setImage:[UIImage imageNamedFromMyBundle:@"zl_edit"] forState:UIControlStateNormal];
+    [self.editBtn setImage:[UIImage tz_imageNamedFromMyBundle:@"zl_edit"] forState:UIControlStateNormal];
     [self.editBtn addTarget:self action:@selector(editClick) forControlEvents:UIControlEventTouchUpInside];
     self.editBtn.layer.masksToBounds = YES;
     self.editBtn.hidden = YES;
@@ -215,7 +215,7 @@
     self.doneBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     self.doneBtn.frame = self.bottomView.frame;
     self.doneBtn.backgroundColor = [UIColor whiteColor];
-    [self.doneBtn setImage:[UIImage imageNamedFromMyBundle:@"zl_takeok"] forState:UIControlStateNormal];
+    [self.doneBtn setImage:[UIImage tz_imageNamedFromMyBundle:@"zl_takeok"] forState:UIControlStateNormal];
     [self.doneBtn addTarget:self action:@selector(doneClick) forControlEvents:UIControlEventTouchUpInside];
     self.doneBtn.layer.masksToBounds = YES;
     self.doneBtn.hidden = YES;
@@ -562,7 +562,7 @@
     self.toolView.maxRecordDuration = self.maxRecordDuration;
     [self.view addSubview:self.toolView];
     
-    self.focusCursorImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamedFromMyBundle:@"zl_focus"]];
+    self.focusCursorImageView = [[UIImageView alloc] initWithImage:[UIImage tz_imageNamedFromMyBundle:@"zl_focus"]];
     self.focusCursorImageView.contentMode = UIViewContentModeScaleAspectFit;
     self.focusCursorImageView.clipsToBounds = YES;
     self.focusCursorImageView.frame = CGRectMake(0, 0, 80, 80);
@@ -570,7 +570,7 @@
     [self.view addSubview:self.focusCursorImageView];
     
     self.toggleCameraBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.toggleCameraBtn setImage:[UIImage imageNamedFromMyBundle:@"zl_toggle_camera"] forState:UIControlStateNormal];
+    [self.toggleCameraBtn setImage:[UIImage tz_imageNamedFromMyBundle:@"zl_toggle_camera"] forState:UIControlStateNormal];
     [self.toggleCameraBtn addTarget:self action:@selector(btnToggleCameraAction) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.toggleCameraBtn];
     
@@ -650,7 +650,11 @@
             return AVCaptureSessionPreset1920x1080;
             
         case ZLCaptureSessionPreset3840x2160:
-            return AVCaptureSessionPreset3840x2160;
+            if (@available(iOS 9.0, *)) {
+                return AVCaptureSessionPreset3840x2160;
+            } else {
+                return AVCaptureSessionPreset1920x1080;
+            }
     }
 }
 

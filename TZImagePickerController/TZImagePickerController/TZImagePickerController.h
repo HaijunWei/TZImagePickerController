@@ -292,12 +292,6 @@
 - (void)configTableView;
 @end
 
-
-@interface UIImage (MyBundle)
-+ (UIImage *)tz_imageNamedFromMyBundle:(NSString *)name;
-@end
-
-
 @interface TZCommonTools : NSObject
 + (BOOL)tz_isIPhoneX;
 + (CGFloat)tz_statusBarHeight;
