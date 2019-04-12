@@ -17,9 +17,9 @@
 #import "TZGifPhotoPreviewController.h"
 #import "TZLocationManager.h"
 #import "TOCropViewController.h"
-#import "ZLCustomCamera.h"
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "TZImageRequestOperation.h"
+#import "HJImagePickerController.h"
 
 @interface TZPhotoPickerController ()<UICollectionViewDataSource,UICollectionViewDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,UIAlertViewDelegate> {
     NSMutableArray *_models;
@@ -43,7 +43,6 @@
 @property (nonatomic, strong) TZCollectionView *collectionView;
 @property (nonatomic, strong) UILabel *noDataLabel;
 @property (strong, nonatomic) UICollectionViewFlowLayout *layout;
-@property (nonatomic, strong) UIImagePickerController *imagePickerVc;
 @property (strong, nonatomic) CLLocation *location;
 @property (nonatomic, strong) NSOperationQueue *operationQueue;
 @end
@@ -55,25 +54,22 @@ static CGFloat itemMargin = 5;
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-- (UIImagePickerController *)imagePickerVc {
-    if (_imagePickerVc == nil) {
-        _imagePickerVc = [[UIImagePickerController alloc] init];
-        _imagePickerVc.delegate = self;
-        // set appearance / 改变相册选择页的导航栏外观
-        _imagePickerVc.navigationBar.barTintColor = self.navigationController.navigationBar.barTintColor;
-        _imagePickerVc.navigationBar.tintColor = self.navigationController.navigationBar.tintColor;
-        UIBarButtonItem *tzBarItem, *BarItem;
-        if (@available(iOS 9, *)) {
-            tzBarItem = [UIBarButtonItem appearanceWhenContainedInInstancesOfClasses:@[[TZImagePickerController class]]];
-            BarItem = [UIBarButtonItem appearanceWhenContainedInInstancesOfClasses:@[[UIImagePickerController class]]];
-        } else {
-            tzBarItem = [UIBarButtonItem appearanceWhenContainedIn:[TZImagePickerController class], nil];
-            BarItem = [UIBarButtonItem appearanceWhenContainedIn:[UIImagePickerController class], nil];
-        }
-        NSDictionary *titleTextAttributes = [tzBarItem titleTextAttributesForState:UIControlStateNormal];
-        [BarItem setTitleTextAttributes:titleTextAttributes forState:UIControlStateNormal];
+- (HJImagePickerController *)imagePickerVc {
+    HJImagePickerController *imagePickerVc = [[HJImagePickerController alloc] init];
+    // set appearance / 改变相册选择页的导航栏外观
+    imagePickerVc.navigationBar.barTintColor = self.navigationController.navigationBar.barTintColor;
+    imagePickerVc.navigationBar.tintColor = self.navigationController.navigationBar.tintColor;
+    UIBarButtonItem *tzBarItem, *BarItem;
+    if (@available(iOS 9, *)) {
+        tzBarItem = [UIBarButtonItem appearanceWhenContainedInInstancesOfClasses:@[[TZImagePickerController class]]];
+        BarItem = [UIBarButtonItem appearanceWhenContainedInInstancesOfClasses:@[[UIImagePickerController class]]];
+    } else {
+        tzBarItem = [UIBarButtonItem appearanceWhenContainedIn:[TZImagePickerController class], nil];
+        BarItem = [UIBarButtonItem appearanceWhenContainedIn:[UIImagePickerController class], nil];
     }
-    return _imagePickerVc;
+    NSDictionary *titleTextAttributes = [tzBarItem titleTextAttributesForState:UIControlStateNormal];
+    [BarItem setTitleTextAttributes:titleTextAttributes forState:UIControlStateNormal];
+    return imagePickerVc;
 }
 
 - (void)viewDidLoad {
@@ -211,11 +207,11 @@ static CGFloat itemMargin = 5;
 - (void)configBottomToolBar {
     TZImagePickerController *tzImagePickerVc = (TZImagePickerController *)self.navigationController;
     if (!tzImagePickerVc.showSelectBtn) return;
-
+    
     _bottomToolBar = [[UIView alloc] initWithFrame:CGRectZero];
     CGFloat rgb = 253 / 255.0;
     _bottomToolBar.backgroundColor = [UIColor colorWithRed:rgb green:rgb blue:rgb alpha:1.0];
-
+    
     _previewButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [_previewButton addTarget:self action:@selector(previewButtonClick) forControlEvents:UIControlEventTouchUpInside];
     _previewButton.titleLabel.font = [UIFont systemFontOfSize:16];
@@ -293,7 +289,7 @@ static CGFloat itemMargin = 5;
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
-
+    
     TZImagePickerController *tzImagePickerVc = (TZImagePickerController *)self.navigationController;
     
     CGFloat top = 0;
@@ -329,7 +325,7 @@ static CGFloat itemMargin = 5;
     }
     _bottomToolBar.frame = CGRectMake(0, toolBarTop, self.view.tz_width, toolBarHeight);
     
-    CGFloat previewWidth = [tzImagePickerVc.previewBtnTitleStr boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX) options:NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:16]} context:nil].size.width + 2;    
+    CGFloat previewWidth = [tzImagePickerVc.previewBtnTitleStr boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX) options:NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:16]} context:nil].size.width + 2;
     if (!tzImagePickerVc.allowPreview) {
         previewWidth = 0.0;
     }
@@ -683,38 +679,55 @@ static CGFloat itemMargin = 5;
 }
 
 // 调用相机
-- (void)pushImagePickerController {
-    
+- (void)pushImagePickerController {    
+    // 提前定位
     TZImagePickerController *tzImagePickerVc = (TZImagePickerController *)self.navigationController;
+    if (tzImagePickerVc.allowCameraLocation) {
+        __weak typeof(self) weakSelf = self;
+        [[TZLocationManager manager] startLocationWithSuccessBlock:^(NSArray<CLLocation *> *locations) {
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            strongSelf.location = [locations firstObject];
+        } failureBlock:^(NSError *error) {
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            strongSelf.location = nil;
+        }];
+    }
+    UIImagePickerControllerSourceType sourceType = UIImagePickerControllerSourceTypeCamera;
+    if (![UIImagePickerController isSourceTypeAvailable:sourceType]) {
+        NSLog(@"模拟器中无法打开照相机,请在真机中使用");
+        return;
+    }
     
-    ZLCustomCamera *customCamera = [ZLCustomCamera new];
-    customCamera.allowTakePhoto = tzImagePickerVc.allowTakePicture;
-    customCamera.allowRecordVideo = tzImagePickerVc.allowTakeVideo;
-    customCamera.maxRecordDuration = tzImagePickerVc.videoMaximumDuration;
-    customCamera.videoType = ZLExportVideoTypeMov;
-    customCamera.allowEdit = tzImagePickerVc.allowCrop;
-    customCamera.needCircleCrop = tzImagePickerVc.needCircleCrop;
-    customCamera.cropAspectRatio = tzImagePickerVc.cropAspectRatio;
-    __weak typeof(customCamera) weakCamera = customCamera;
-    customCamera.doneBlock = ^(UIImage *image, NSURL *videoUrl) {
-        [weakCamera dismissViewControllerAnimated:NO completion:nil];
+    HJImagePickerController *imagePickerVc = [self imagePickerVc];
+    imagePickerVc.sourceType = sourceType;
+    imagePickerVc.isAllowTakePicture = tzImagePickerVc.allowTakePicture;
+    imagePickerVc.isAllowEditPicture = tzImagePickerVc.allowCrop;
+    imagePickerVc.isNeedCircleCrop = tzImagePickerVc.needCircleCrop;
+    imagePickerVc.cropAspectRatio = tzImagePickerVc.cropAspectRatio;
+    imagePickerVc.isAllowTakeVideo = tzImagePickerVc.allowTakeVideo;
+    imagePickerVc.videoMaximumDuration = tzImagePickerVc.videoMaximumDuration;
+    __weak typeof(self) weakSelf = self;
+    imagePickerVc.doneBlock = ^(UIImage * _Nullable image, NSURL * _Nullable videoUrl) {
+        [weakSelf dismissViewControllerAnimated:YES completion:nil];
+        TZImagePickerController *imagePickerVc = (TZImagePickerController *)weakSelf.navigationController;
+        [imagePickerVc showProgressHUD];
         if (image) {
-            [tzImagePickerVc showProgressHUD];
-            [[TZImageManager manager] savePhotoWithImage:image completion:^(PHAsset *asset, NSError *error) {
+            [[TZImageManager manager] savePhotoWithImage:image location:weakSelf.location completion:^(PHAsset *asset, NSError *error){
                 if (!error) {
-                    [self addPHAsset:asset];
+                    [weakSelf addPHAsset:asset];
                 }
             }];
+            weakSelf.location = nil;
         } else if (videoUrl) {
-            [tzImagePickerVc showProgressHUD];
-            [[TZImageManager manager] saveVideoWithUrl:videoUrl completion:^(PHAsset *asset, NSError *error) {
+            [[TZImageManager manager] saveVideoWithUrl:videoUrl location:weakSelf.location completion:^(PHAsset *asset, NSError *error) {
                 if (!error) {
-                    [self addPHAsset:asset];
+                    [weakSelf addPHAsset:asset];
                 }
             }];
+            weakSelf.location = nil;
         }
     };
-    [self presentViewController:customCamera animated:YES completion:nil];
+    [self presentViewController:imagePickerVc animated:YES completion:nil];
 }
 
 - (void)refreshBottomToolBarStatus {
@@ -731,6 +744,10 @@ static CGFloat itemMargin = 5;
     _originalPhotoButton.selected = (_isSelectOriginalPhoto && _originalPhotoButton.enabled);
     _originalPhotoLabel.hidden = (!_originalPhotoButton.isSelected);
     if (_isSelectOriginalPhoto) [self getSelectedPhotoBytes];
+    
+    if (tzImagePickerVc.photoPickerPageDidRefreshStateBlock) {
+        tzImagePickerVc.photoPickerPageDidRefreshStateBlock(_collectionView, _bottomToolBar, _previewButton, _originalPhotoButton, _originalPhotoLabel, _doneButton, _numberImageView, _numberLabel, _divideLine);;
+    }
 }
 
 - (void)pushPhotoPrevireViewController:(TZPhotoPreviewController *)photoPreviewVc {

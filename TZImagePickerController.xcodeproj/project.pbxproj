@@ -13,6 +13,7 @@
 		6DC358661CC8BAFD00898D29 /* TZImagePickerController.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 6DC358651CC8BAFD00898D29 /* TZImagePickerController.bundle */; };
 		6DC84D0A1DF5358500A107A9 /* TZImageCropManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DC84D091DF5358500A107A9 /* TZImageCropManager.m */; };
 		6DD0502B1DF659ED0057C78D /* TZProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DD0502A1DF659ED0057C78D /* TZProgressView.m */; };
+		84181E4D2260272200AF51DC /* HJImagePickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 84181E4B2260207D00AF51DC /* HJImagePickerController.m */; };
 		90020E1320F8840800D3AB10 /* TZImagePickerController.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 90020E1220F8840800D3AB10 /* TZImagePickerController.podspec */; };
 		90020E1520F8840F00D3AB10 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 90020E1420F8840E00D3AB10 /* README.md */; };
 		900E65811C2BB8D5003D9A9E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 900E65801C2BB8D5003D9A9E /* main.m */; };
@@ -100,13 +101,6 @@
 		F813DB5C217EB2B10060EB61 /* UIImage+CropRotate.m in Sources */ = {isa = PBXBuildFile; fileRef = F813DB3E217EB2B10060EB61 /* UIImage+CropRotate.m */; };
 		F813DB5D217EB2B10060EB61 /* UIImage+CropRotate.h in Headers */ = {isa = PBXBuildFile; fileRef = F813DB3F217EB2B10060EB61 /* UIImage+CropRotate.h */; };
 		F813DB5E217EB2B10060EB61 /* TOCropViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = F813DB40217EB2B10060EB61 /* TOCropViewController.h */; };
-		F8257592217E1CA700156CAA /* ZLCustomCamera.h in Headers */ = {isa = PBXBuildFile; fileRef = F825758D217E1CA700156CAA /* ZLCustomCamera.h */; };
-		F8257593217E1CA700156CAA /* ZLPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = F825758E217E1CA700156CAA /* ZLPlayer.m */; };
-		F8257594217E1CA700156CAA /* ZLPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = F825758E217E1CA700156CAA /* ZLPlayer.m */; };
-		F8257595217E1CA700156CAA /* ZLDefine.h in Headers */ = {isa = PBXBuildFile; fileRef = F825758F217E1CA700156CAA /* ZLDefine.h */; };
-		F8257596217E1CA700156CAA /* ZLCustomCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = F8257590217E1CA700156CAA /* ZLCustomCamera.m */; };
-		F8257597217E1CA700156CAA /* ZLCustomCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = F8257590217E1CA700156CAA /* ZLCustomCamera.m */; };
-		F8257598217E1CA700156CAA /* ZLPlayer.h in Headers */ = {isa = PBXBuildFile; fileRef = F8257591217E1CA700156CAA /* ZLPlayer.h */; };
 		F825759B217E1CC100156CAA /* UIImage+MyBundle.m in Sources */ = {isa = PBXBuildFile; fileRef = F8257599217E1CC000156CAA /* UIImage+MyBundle.m */; };
 		F825759C217E1CC100156CAA /* UIImage+MyBundle.m in Sources */ = {isa = PBXBuildFile; fileRef = F8257599217E1CC000156CAA /* UIImage+MyBundle.m */; };
 		F825759D217E1CC100156CAA /* UIImage+MyBundle.h in Headers */ = {isa = PBXBuildFile; fileRef = F825759A217E1CC100156CAA /* UIImage+MyBundle.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -166,6 +160,8 @@
 		6DC84D091DF5358500A107A9 /* TZImageCropManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TZImageCropManager.m; sourceTree = "<group>"; };
 		6DD050291DF659ED0057C78D /* TZProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TZProgressView.h; sourceTree = "<group>"; };
 		6DD0502A1DF659ED0057C78D /* TZProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TZProgressView.m; sourceTree = "<group>"; };
+		84181E4A2260207D00AF51DC /* HJImagePickerController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HJImagePickerController.h; sourceTree = "<group>"; };
+		84181E4B2260207D00AF51DC /* HJImagePickerController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HJImagePickerController.m; sourceTree = "<group>"; };
 		90020E1220F8840800D3AB10 /* TZImagePickerController.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TZImagePickerController.podspec; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		90020E1420F8840E00D3AB10 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		900E657C1C2BB8D5003D9A9E /* TZImagePickerController.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TZImagePickerController.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -241,11 +237,6 @@
 		F813DB3E217EB2B10060EB61 /* UIImage+CropRotate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+CropRotate.m"; sourceTree = "<group>"; };
 		F813DB3F217EB2B10060EB61 /* UIImage+CropRotate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+CropRotate.h"; sourceTree = "<group>"; };
 		F813DB40217EB2B10060EB61 /* TOCropViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TOCropViewController.h; sourceTree = "<group>"; };
-		F825758D217E1CA700156CAA /* ZLCustomCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZLCustomCamera.h; sourceTree = "<group>"; };
-		F825758E217E1CA700156CAA /* ZLPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZLPlayer.m; sourceTree = "<group>"; };
-		F825758F217E1CA700156CAA /* ZLDefine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZLDefine.h; sourceTree = "<group>"; };
-		F8257590217E1CA700156CAA /* ZLCustomCamera.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZLCustomCamera.m; sourceTree = "<group>"; };
-		F8257591217E1CA700156CAA /* ZLPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZLPlayer.h; sourceTree = "<group>"; };
 		F8257599217E1CC000156CAA /* UIImage+MyBundle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+MyBundle.m"; sourceTree = "<group>"; };
 		F825759A217E1CC100156CAA /* UIImage+MyBundle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+MyBundle.h"; sourceTree = "<group>"; };
 		F89ED5782180C1B4005AE70F /* TOCropViewControllerBundle.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = TOCropViewControllerBundle.bundle; sourceTree = "<group>"; };
@@ -290,6 +281,15 @@
 				6DC358651CC8BAFD00898D29 /* TZImagePickerController.bundle */,
 			);
 			name = Resources;
+			sourceTree = "<group>";
+		};
+		84181E492260204E00AF51DC /* HJImagePickerController */ = {
+			isa = PBXGroup;
+			children = (
+				84181E4A2260207D00AF51DC /* HJImagePickerController.h */,
+				84181E4B2260207D00AF51DC /* HJImagePickerController.m */,
+			);
+			path = HJImagePickerController;
 			sourceTree = "<group>";
 		};
 		900E65731C2BB8D5003D9A9E = {
@@ -371,8 +371,8 @@
 		900EEFF51C2BBF7600EA709B /* TZImagePickerController */ = {
 			isa = PBXGroup;
 			children = (
+				84181E492260204E00AF51DC /* HJImagePickerController */,
 				F813DB11217EB2B10060EB61 /* TOCropViewController */,
-				F825758C217E1C4500156CAA /* ZLPhotoBrowse */,
 				900EEFF61C2BBF9500EA709B /* TZImagePickerController.h */,
 				900EEFF71C2BBF9500EA709B /* TZImagePickerController.m */,
 				900EEFFC1C2BD58B00EA709B /* TZPhotoPickerController.h */,
@@ -513,18 +513,6 @@
 			path = Categories;
 			sourceTree = "<group>";
 		};
-		F825758C217E1C4500156CAA /* ZLPhotoBrowse */ = {
-			isa = PBXGroup;
-			children = (
-				F825758D217E1CA700156CAA /* ZLCustomCamera.h */,
-				F8257590217E1CA700156CAA /* ZLCustomCamera.m */,
-				F825758F217E1CA700156CAA /* ZLDefine.h */,
-				F8257591217E1CA700156CAA /* ZLPlayer.h */,
-				F825758E217E1CA700156CAA /* ZLPlayer.m */,
-			);
-			path = ZLPhotoBrowse;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -536,7 +524,6 @@
 				F813DB5A217EB2B10060EB61 /* TOCropScrollView.h in Headers */,
 				901CC3FA21CB757500C55443 /* TZImageRequestOperation.h in Headers */,
 				9F763A6B1FA0731E00D9E526 /* TZImagePickerController.h in Headers */,
-				F8257598217E1CA700156CAA /* ZLPlayer.h in Headers */,
 				9F763A6D1FA0733700D9E526 /* NSBundle+TZImagePicker.h in Headers */,
 				9F763A6C1FA0733100D9E526 /* TZAssetModel.h in Headers */,
 				F813DB50217EB2B10060EB61 /* TOCropOverlayView.h in Headers */,
@@ -558,8 +545,6 @@
 				F813DB4A217EB2B10060EB61 /* TOActivityCroppedImageProvider.h in Headers */,
 				9F763A6F1FA0741D00D9E526 /* TZPhotoPickerController.h in Headers */,
 				9F763A751FA0741D00D9E526 /* TZProgressView.h in Headers */,
-				F8257595217E1CA700156CAA /* ZLDefine.h in Headers */,
-				F8257592217E1CA700156CAA /* ZLCustomCamera.h in Headers */,
 				9F763A771FA0741D00D9E526 /* TZImageCropManager.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -673,6 +658,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 				"zh-Hans",
@@ -779,8 +765,6 @@
 				901F2296215CABD600F604ED /* FLAnimatedImageView.m in Sources */,
 				F813DB58217EB2B10060EB61 /* TOCropToolbar.m in Sources */,
 				F813DB5B217EB2B10060EB61 /* UIImage+CropRotate.m in Sources */,
-				F8257593217E1CA700156CAA /* ZLPlayer.m in Sources */,
-				F8257596217E1CA700156CAA /* ZLCustomCamera.m in Sources */,
 				F813DB54217EB2B10060EB61 /* TOCropView.m in Sources */,
 				9019FD8D21EC25D7009ADEAE /* TZImageUploadOperation.m in Sources */,
 				900E65811C2BB8D5003D9A9E /* main.m in Sources */,
@@ -825,8 +809,6 @@
 				9F763A581FA072E500D9E526 /* TZPhotoPreviewController.m in Sources */,
 				9F763A5A1FA072E500D9E526 /* TZPhotoPreviewCell.m in Sources */,
 				F813DB5C217EB2B10060EB61 /* UIImage+CropRotate.m in Sources */,
-				F8257597217E1CA700156CAA /* ZLCustomCamera.m in Sources */,
-				F8257594217E1CA700156CAA /* ZLPlayer.m in Sources */,
 				F813DB4E217EB2B10060EB61 /* TOCropViewController.m in Sources */,
 				9F763A5C1FA072E500D9E526 /* TZVideoPlayerController.m in Sources */,
 				9F763A5E1FA072E500D9E526 /* TZGifPhotoPreviewController.m in Sources */,
@@ -842,6 +824,7 @@
 				F813DB55217EB2B10060EB61 /* TOCropView.m in Sources */,
 				9F763A681FA072E500D9E526 /* UIView+Layout.m in Sources */,
 				9F763A6A1FA072E500D9E526 /* NSBundle+TZImagePicker.m in Sources */,
+				84181E4D2260272200AF51DC /* HJImagePickerController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
