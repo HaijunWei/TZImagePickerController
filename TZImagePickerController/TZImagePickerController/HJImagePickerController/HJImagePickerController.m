@@ -76,19 +76,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.delegate = self;
-}
-
-#pragma mark - Setter
-
-- (void)setIsAllowTakePicture:(BOOL)isAllowTakePicture {
-    _isAllowTakePicture = isAllowTakePicture;
     [self updateMeidaTypes];
 }
-
-- (void)setIsAllowTakeVideo:(BOOL)isAllowTakeVideo {
-    _isAllowTakeVideo = isAllowTakeVideo;
-    [self updateMeidaTypes];
-}
-
 
 @end
