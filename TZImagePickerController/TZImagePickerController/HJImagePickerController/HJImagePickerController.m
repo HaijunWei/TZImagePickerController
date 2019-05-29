@@ -16,7 +16,7 @@
 
 #pragma mark - Actions
 
-- (void)editPhoto:(UIImage *)photo callback:(void(^)(UIImage *photo))callback {
+- (void)editPhoto:(UIImage *)photo callback:(void(^)(UIImage * _Nullable photo))callback {
     TOCropViewCroppingStyle style = self.isNeedCircleCrop ? TOCropViewCroppingStyleCircular : TOCropViewCroppingStyleDefault;
     TOCropViewController *cropViewController = [[TOCropViewController alloc] initWithCroppingStyle:style image:photo];
     if (style == TOCropViewCroppingStyleDefault && !CGSizeEqualToSize(CGSizeZero, self.cropAspectRatio)) {
@@ -29,10 +29,16 @@
     cropViewController.view.frame = self.view.bounds;
     cropViewController.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:cropViewController.view];
+    __weak typeof(cropViewController) weakVC = cropViewController;
     cropViewController.onDidCropToRect = ^(UIImage * _Nonnull image, CGRect cropRect, NSInteger angle) {
+        [weakVC.view removeFromSuperview];
+        [weakVC removeFromParentViewController];
         callback(image);
     };
     cropViewController.onDidFinishCancelled = ^(BOOL isFinished) {
+        callback(nil);
+        [weakVC.view removeFromSuperview];
+        [weakVC removeFromParentViewController];
         [self dismissViewControllerAnimated:YES completion:nil];
     };
 }
