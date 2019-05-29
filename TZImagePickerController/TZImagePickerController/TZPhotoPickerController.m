@@ -628,7 +628,8 @@ static CGFloat itemMargin = 5;
                     }
                     cropViewController.onDidCropToRect = ^(UIImage * _Nonnull image, CGRect cropRect, NSInteger angle) {
                         [self.navigationController dismissViewControllerAnimated:YES completion:nil];
-                        [self callDelegateMethodWithPhotos:@[image] assets:@[model.asset] infoArr:nil];
+                        // 剪裁的图片是没有asset的
+                        [self callDelegateMethodWithPhotos:@[image] assets:@[] infoArr:nil];
                     };
                     [self.navigationController pushViewController:cropViewController animated:YES];
                 }
